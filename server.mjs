@@ -131,6 +131,9 @@ const server = http.createServer(async (req, res) => {
   if (!proxy.ok && !(devMode && proxy.status === 503)) {
     return json(res, proxy.status || 401, { error: proxy.error || "Solicitud no autorizada" });
   }
+  if (proxy.ok && !proxy.customerId && process.env.ALLOW_ANONYMOUS_GEMINI !== "true") {
+    return json(res, 401, { error: "Inicia sesión para usar el asistente de ChambaU" });
+  }
 
   try {
     const raw = await readBody(req);
