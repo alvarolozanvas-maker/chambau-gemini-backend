@@ -112,6 +112,13 @@ async function generateWithGemini(prompt) {
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
+  if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/api")) {
+    return json(res, 200, {
+      ok: true,
+      service: "chambau-gemini-backend",
+      message: "Backend de ChambaU activo. Usa /api/gemini para las solicitudes de IA.",
+    });
+  }
   if (req.method === "GET" && url.pathname === "/health") {
     return json(res, 200, { ok: true, service: "chambau-gemini-backend" });
   }
@@ -143,3 +150,4 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, () => {
   console.log(`ChambaU Gemini backend escuchando en puerto ${port}`);
 });
+
